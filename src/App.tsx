@@ -6,7 +6,7 @@ import { GSI } from "./GSI";
 import rocket from "./rocket.png";
 
 import "bulma/css/bulma.css";
-import { Box, Columns, Heading, Level, Image } from "react-bulma-components";
+import { Box, Columns, Heading, Level } from "react-bulma-components";
 
 const flightTimeToText = (flightTime?: number): string => {
   if (flightTime == undefined) return "--.-";
@@ -90,8 +90,13 @@ export const App = () => {
           zIndex: "999",
         }}
       >
-        <Box>
-          <Box style={{ margin: "-20px -20px 24px -20px" }}>
+        <Box style={{ borderRadius: "0 0 6px 6px" }}>
+          <Box
+            style={{
+              margin: "-20px -20px 24px -20px",
+              borderRadius: "0 0 6px 6px",
+            }}
+          >
             <Columns breakpoint="mobile" multiline centered vCentered>
               <Columns.Column size={6}>
                 <Level>
@@ -172,7 +177,7 @@ export const App = () => {
           </Columns>
         </Box>
         <div style={{ position: "fixed", bottom: "0px", width: "100%" }}>
-          <Box>
+          <Box style={{ borderRadius: "6px 6px 0 0" }}>
             <Columns breakpoint="mobile" multiline centered>
               <Columns.Column size={6}>
                 <Level>
