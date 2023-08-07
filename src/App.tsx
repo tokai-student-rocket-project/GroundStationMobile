@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
 import { GSI } from "./GSI";
 
-import rocket from "./rocket.png";
+import rocket from "./images/rocket.png";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRocket } from "@fortawesome/free-solid-svg-icons";
 
 import "bulma/css/bulma.css";
-import { Box, Columns, Heading, Level } from "react-bulma-components";
+import { Box, Button, Columns, Heading, Level } from "react-bulma-components";
 
 const flightTimeToText = (flightTime?: number): string => {
   if (flightTime == undefined) return "--.-";
@@ -58,6 +62,8 @@ export const App = () => {
   const [pitch, setPitch] = useState<number | undefined>();
   const [latitude, setLatitude] = useState<number | undefined>();
   const [longitude, setLongitude] = useState<number | undefined>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const socket = io(`http://${window.location.hostname}:3010`, {
@@ -177,6 +183,14 @@ export const App = () => {
           </Columns>
         </Box>
         <div style={{ position: "fixed", bottom: "0px", width: "100%" }}>
+          <Button onClick={() => navigate("/ar")} className="is-link is-light">
+            <FontAwesomeIcon
+              icon={faRocket}
+              bounce
+              style={{ margin: "auto" }}
+            />
+            <p className="mx-1 is-size-5">AR</p>
+          </Button>
           <Box style={{ borderRadius: "6px 6px 0 0" }}>
             <Columns breakpoint="mobile" multiline centered>
               <Columns.Column size={6}>
