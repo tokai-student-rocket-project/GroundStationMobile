@@ -185,9 +185,8 @@ export const App = () => {
         <div style={{ position: "fixed", bottom: "0px", width: "100%" }}>
           <Button
             onClick={() =>
-              navigate(
-                "https://tokai-student-rocket-project.github.io/RocketAR/"
-              )
+              (window.location.href =
+                "https://tokai-student-rocket-project.github.io/RocketAR/")
             }
             className="is-link is-light"
           >
