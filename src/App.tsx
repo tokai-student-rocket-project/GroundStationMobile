@@ -183,7 +183,14 @@ export const App = () => {
           </Columns>
         </Box>
         <div style={{ position: "fixed", bottom: "0px", width: "100%" }}>
-          <Button onClick={() => navigate("/ar")} className="is-link is-light">
+          <Button
+            onClick={() =>
+              navigate(
+                "https://tokai-student-rocket-project.github.io/RocketAR/"
+              )
+            }
+            className="is-link is-light"
+          >
             <FontAwesomeIcon
               icon={faRocket}
               bounce
