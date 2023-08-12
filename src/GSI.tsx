@@ -22,7 +22,7 @@ const icon = L.divIcon({
       <div
         style={{
           position: "absolute",
-          left: "-50%",
+          left: "-25%",
           top: "-120%",
           width: "40px",
           height: "20px",
@@ -43,7 +43,7 @@ const icon = L.divIcon({
           position: "absolute",
           borderRadius: "6px",
           top: "-300%",
-          left: "-340%",
+          left: "-315%",
         }}
       >
         <figure className="image is-24x24 mx-1">
@@ -78,7 +78,7 @@ export const GSI = ({ latitude, longitude }: Props) => {
     >
       <TileLayer
         attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
-        url="https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"
+        url="/map/tile/{z}/{x}/{y}.png"
       />
       <Marker position={position} autoPan={false} icon={icon} />
       <ChangeCenter center={center} />
