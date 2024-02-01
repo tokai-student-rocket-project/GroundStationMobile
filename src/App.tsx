@@ -66,7 +66,7 @@ export const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const socket = io(`http://${window.location.hostname}:3010`, {
+    const socket = io(`ws://${window.location.hostname}:3010`, {
       transports: ["websocket"],
     });
 
