@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
 import { GSI } from "./GSI";
@@ -26,10 +26,11 @@ export const App = () => {
     number | undefined
   >();
 
-  // const navigate = useNavigate();
+  const search = useLocation().search;
 
   useEffect(() => {
-    const socket = io(`http://172.20.56.178:3010`, {
+    const query = new URLSearchParams(search);
+    const socket = io(`http://${query.get("ws")}:3010`, {
       transports: ["websocket"],
     });
 

@@ -1,13 +1,6 @@
 import { renderToString } from "react-dom/server";
 
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Polygon,
-  Circle,
-  Polyline,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
