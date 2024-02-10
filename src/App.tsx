@@ -31,7 +31,7 @@ export const App = () => {
   useEffect(() => {
     const query = new URLSearchParams(search);
     const socket = io(`https://${query.get("ws")}:3010`, {
-      transports: ["polling"],
+      transports: ["websocket"],
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
