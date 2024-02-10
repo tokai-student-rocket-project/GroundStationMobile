@@ -30,7 +30,7 @@ export const App = () => {
 
   useEffect(() => {
     const query = new URLSearchParams(search);
-    const socket = io(`http://${query.get("ws")}:3010`, {
+    const socket = io(`https://${query.get("ws")}:3010`, {
       transports: ["websocket"],
     });
 
