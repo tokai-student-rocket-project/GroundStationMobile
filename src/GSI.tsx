@@ -82,7 +82,7 @@ export const GSI = ({ latitude, longitude, accuracy }: Props) => {
     >
       <TileLayer
         attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
-        url="/map/tile/{z}/{x}/{y}.png"
+        url={`${process.env.BASE_URL}map/tile/{z}/{x}/{y}.png`}
       />
       <Marker position={center} autoPan={false} icon={icon} />
       <ChangeCenter center={center} />
