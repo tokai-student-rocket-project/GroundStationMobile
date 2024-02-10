@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
+// import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
 
 import { GSI } from "./GSI";
 
@@ -12,82 +12,51 @@ import { faRocket } from "@fortawesome/free-solid-svg-icons";
 import "bulma/css/bulma.css";
 import { Box, Button, Columns, Heading, Level } from "react-bulma-components";
 
-const flightTimeToText = (flightTime?: number): string => {
-  if (flightTime == undefined) return "--.-";
-
-  // uint16_t の -1
-  if (flightTime == 65535) return "--.-";
-
-  return (flightTime / 1000.0).toFixed(1);
-};
-
-const getFlightMode = (flightModeNumber?: number): string | undefined => {
-  if (flightModeNumber == undefined) return undefined;
-  if (flightModeNumber < 0 || flightModeNumber > 9) return undefined;
-
-  return [
-    "SLEEP",
-    "STANDBY",
-    "THRUST",
-    "CLIMB",
-    "DESCENT",
-    "DECEL",
-    "PARACHUTE",
-    "LAND",
-    "SHUTDOWN",
-  ][flightModeNumber];
-};
-
-const getNorm = (x?: number, y?: number, z?: number): number | undefined => {
-  if (x == undefined || y == undefined || z == undefined) return undefined;
-  return Math.sqrt(x * x + y * y + z * z);
-};
-
-const degToDms = (deg?: number): string | undefined => {
-  if (deg == undefined) return undefined;
-
-  const d = Math.trunc(deg);
-  const ms = parseFloat("0." + deg.toString().split(".")[1]) * 60;
-  const m = Math.trunc(ms);
-  const s = parseFloat("0." + ms.toString().split(".")[1]) * 60;
-
-  return `${d.toFixed()}°${m.toFixed()}'${s.toFixed(2)}"`;
-};
-
 export const App = () => {
-  const [flightTime, setFlightTime] = useState<number | undefined>();
-  const [flightMode, setFlightMode] = useState<number | undefined>();
-  const [altitude, setAltitude] = useState<number | undefined>();
-  const [acceleration, setAcceleration] = useState<number | undefined>();
+  const [flightTime, setFlightTime] = useState<string | undefined>();
+  const [flightMode, setFlightMode] = useState<string | undefined>();
+  const [altitude, setAltitude] = useState<string | undefined>();
+  const [acceleration, setAcceleration] = useState<string | undefined>();
   const [pitch, setPitch] = useState<number | undefined>();
-  const [latitude, setLatitude] = useState<number | undefined>();
-  const [longitude, setLongitude] = useState<number | undefined>();
+  const [latitudeDms, setLatitudeDms] = useState<string | undefined>();
+  const [latitudeDeg, setLatitudeDeg] = useState<number | undefined>();
+  const [longitudeDms, setLongitudeDms] = useState<string | undefined>();
+  const [longitudeDeg, setLongitudeDeg] = useState<number | undefined>();
+  const [positionAccuracy, setPositionAccuracy] = useState<
+    number | undefined
+  >();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
-    const socket = io(`ws://${window.location.hostname}:3010`, {
+    const socket = io(`http://172.20.56.178:3010`, {
       transports: ["websocket"],
     });
 
-    socket.on("air-data", (json) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket.on("data", (data: any) => {
+      const json = JSON.parse(data);
       setAltitude(json.Alt);
-      setAcceleration(getNorm(json.Lia.x, json.Lia.y, json.Lia.z));
-      setPitch(json.Ori.y);
-    });
-    socket.on("position-data", (json) => {
-      setLatitude(json.Latitude);
-      setLongitude(json.Longitude);
-    });
-    socket.on("system-data", (json) => {
+      setAcceleration(json.Acc);
+      setPitch(Number(json.Ori));
+      setLatitudeDeg(Number(json.LatDeg));
+      setLatitudeDms(json.LatDms);
+      setLongitudeDeg(Number(json.LonDeg));
+      setLongitudeDms(json.LonDms);
+      setPositionAccuracy(json.PosAcc);
       setFlightTime(json.FlightTime);
       setFlightMode(json.FlightMode);
+      console.log(json);
     });
   }, []);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
-      <GSI latitude={latitude} longitude={longitude} />
+      <GSI
+        latitude={latitudeDeg}
+        longitude={longitudeDeg}
+        accuracy={positionAccuracy}
+      />
       <div
         style={{
           position: "absolute",
@@ -108,9 +77,7 @@ export const App = () => {
                 <Level>
                   <Level.Item>
                     <div>
-                      <Heading>
-                        {`X+ ${flightTimeToText(flightTime)} sec`}
-                      </Heading>
+                      <Heading>{`X+ ${flightTime ?? "--.--"} sec`}</Heading>
                     </div>
                   </Level.Item>
                 </Level>
@@ -120,9 +87,7 @@ export const App = () => {
                   <Level.Item>
                     <div>
                       <Heading size={6}>フライトモード</Heading>
-                      <Heading size={4}>
-                        {getFlightMode(flightMode) ?? "-------"}
-                      </Heading>
+                      <Heading size={4}>{flightMode ?? "-------"}</Heading>
                     </div>
                   </Level.Item>
                 </Level>
@@ -137,9 +102,7 @@ export const App = () => {
                     <Heading size={6} textAlign="center">
                       高度
                     </Heading>
-                    <Heading size={4}>
-                      {`${altitude?.toFixed(2) ?? "---.--"} m`}
-                    </Heading>
+                    <Heading size={4}>{`${altitude ?? "---.--"} m`}</Heading>
                   </div>
                 </Level.Item>
                 <Level.Item>
@@ -148,7 +111,7 @@ export const App = () => {
                       加速度
                     </Heading>
                     <Heading size={4}>
-                      {`${acceleration?.toFixed(2) ?? "---.--"} m/s`}
+                      {`${acceleration ?? "---.--"} m/s`}
                       <span
                         style={{
                           verticalAlign: "super",
@@ -174,7 +137,7 @@ export const App = () => {
                 <img
                   src={rocket}
                   style={{
-                    transform: `rotate(${-pitch + 90}deg)`,
+                    transform: `rotate(${pitch === null ? 0 : pitch!}deg)`,
                     width: "120px",
                   }}
                 ></img>
@@ -204,8 +167,8 @@ export const App = () => {
                   <Level.Item>
                     <div>
                       <Heading size={5}>{`${
-                        degToDms(latitude) ?? "--°--'--.--\""
-                      } N`}</Heading>
+                        latitudeDms ?? "--°--′--″N"
+                      } `}</Heading>
                     </div>
                   </Level.Item>
                 </Level>
@@ -215,8 +178,8 @@ export const App = () => {
                   <Level.Item>
                     <div>
                       <Heading size={5}>{`${
-                        degToDms(longitude) ?? "---°--'--.--\""
-                      } E`}</Heading>
+                        longitudeDms ?? "--°--′--″E"
+                      }`}</Heading>
                     </div>
                   </Level.Item>
                 </Level>

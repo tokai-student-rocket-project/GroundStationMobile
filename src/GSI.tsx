@@ -50,7 +50,7 @@ const icon = L.divIcon({
           <img src={tsrp} style={{ width: "24px", height: "24px" }} />
         </figure>
         <p className="has-text-light is-size-5" style={{ width: "52px" }}>
-          H-58
+          H-59
         </p>
       </div>
     </>
@@ -60,14 +60,25 @@ const icon = L.divIcon({
 type Props = {
   latitude?: number;
   longitude?: number;
+  accuracy?: number;
 };
 
-export const GSI = ({ latitude, longitude }: Props) => {
+export const GSI = ({ latitude, longitude, accuracy }: Props) => {
+  latitude = latitude == 0 ? undefined : latitude;
+  longitude = longitude == 0 ? undefined : longitude;
+  accuracy = accuracy == 0 ? undefined : accuracy;
+
+  // コムスク
   const center: L.LatLngExpression = [
-    latitude ?? 40.138633,
-    longitude ?? 139.98485,
+    latitude ?? 35.36099,
+    longitude ?? 139.271668,
   ];
-  const position: L.LatLngExpression = [latitude ?? 0, longitude ?? 0];
+
+  // 大樹
+  // const center: L.LatLngExpression = [
+  //   latitude ?? 42.51439,
+  //   longitude ?? 143.439794,
+  // ];
 
   return (
     <MapContainer
@@ -80,9 +91,18 @@ export const GSI = ({ latitude, longitude }: Props) => {
         attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
         url="/map/tile/{z}/{x}/{y}.png"
       />
-      <Marker position={position} autoPan={false} icon={icon} />
+      <Marker position={center} autoPan={false} icon={icon} />
       <ChangeCenter center={center} />
       <Circle
+        center={center}
+        pathOptions={{
+          color: "royalblue",
+          stroke: false,
+          fillOpacity: 0.5,
+        }}
+        radius={accuracy ?? 0}
+      />
+      {/* <Circle
         center={[40.138633, 139.98485]}
         pathOptions={{
           color: "magenta",
@@ -113,7 +133,7 @@ export const GSI = ({ latitude, longitude }: Props) => {
           [40.1411762, 139.988142],
           [40.1420251, 139.985234],
         ]}
-      />
+      /> */}
     </MapContainer>
   );
 };
